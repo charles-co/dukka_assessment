@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=dukka_assessment
+POSTGRES_USER=TNRBNsWtaaapDzBfqtEiCNeOpcsuZvkH
+POSTGRES_PASSWORD=E7UxhA3UJWspGrkr9lSwu8Pzp4YaRoHJm1WD5WrZml8eFZ6ES5CUg4UwTzpbf9wE
