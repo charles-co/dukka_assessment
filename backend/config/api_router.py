@@ -1,6 +1,6 @@
 from django.urls import path
-from dukka_assessment.users.api.views import user_endpoints
 
+from dukka_assessment.users.api.views import user_endpoints
 
 app_name = "api"
 urlpatterns = [

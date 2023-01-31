@@ -7,8 +7,13 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        exclude = ["password", "is_superuser", "is_staff", "is_active", "groups", "user_permissions"]
+        exclude = [
+            "password",
+            "is_superuser",
+            "is_staff",
+            "is_active",
+            "groups",
+            "user_permissions",
+        ]
 
-        extra_kwargs = {
-            "email": {"read_only": True}
-        }
+        extra_kwargs = {"email": {"read_only": True}}
