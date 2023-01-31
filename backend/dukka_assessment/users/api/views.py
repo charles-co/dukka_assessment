@@ -1,10 +1,15 @@
 from django.contrib.auth import get_user_model
-from rest_framework import permissions, status
+from rest_framework import parsers, permissions, renderers, status
+from rest_framework.authtoken.models import Token
+from rest_framework.compat import coreapi, coreschema
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.schemas import ManualSchema
+from rest_framework.schemas import coreapi as coreapi_schema
+from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 
-from .serializers import UserSerializer
+from .serializers import CustomAuthTokenSerializer, UserSerializer
 
 User = get_user_model()
 
@@ -78,3 +83,57 @@ class UserViewSet(GenericViewSet):
 user_endpoints = UserViewSet.as_view(
     {"get": "me", "put": "update_by_put", "patch": "update_by_patch", "post": "create"}
 )
+
+
+class CustomObtainAuthToken(APIView):
+    throttle_classes = ()
+    permission_classes = ()
+    parser_classes = (
+        parsers.FormParser,
+        parsers.MultiPartParser,
+        parsers.JSONParser,
+    )
+    renderer_classes = (renderers.JSONRenderer,)
+    serializer_class = CustomAuthTokenSerializer
+
+    if coreapi_schema.is_enabled():
+        schema = ManualSchema(
+            fields=[
+                coreapi.Field(
+                    name="email",
+                    required=True,
+                    location="form",
+                    schema=coreschema.String(
+                        title="email",
+                        description="Valid email for authentication",
+                    ),
+                ),
+                coreapi.Field(
+                    name="password",
+                    required=True,
+                    location="form",
+                    schema=coreschema.String(
+                        title="Password",
+                        description="Valid password for authentication",
+                    ),
+                ),
+            ],
+            encoding="application/json",
+        )
+
+    def get_serializer_context(self):
+        return {"request": self.request, "format": self.format_kwarg, "view": self}
+
+    def get_serializer(self, *args, **kwargs):
+        kwargs["context"] = self.get_serializer_context()
+        return self.serializer_class(*args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data["user"]
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({"token": token.key})
+
+
+custom_obtain_auth_token = CustomObtainAuthToken.as_view()

@@ -73,3 +73,12 @@ class TestUserViewSet:
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data[field] == new_obj[field]
+
+    def test_auth_token(self, client: APIClient):
+
+        user = UserFactory(password="test")
+        response = client.post(
+            reverse("auth-token"), {"email": user.email, "password": "test"}
+        )
+        assert response.status_code == status.HTTP_200_OK
+        assert "token" in response.data

@@ -3,7 +3,10 @@ from django.conf.urls.static import static
 from django.urls import include, path
 from django.views import defaults as default_views
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from rest_framework.authtoken.views import obtain_auth_token
+
+from dukka_assessment.users.api.views import (
+    custom_obtain_auth_token as obtain_auth_token,
+)
 
 urlpatterns = [
     # Your stuff: custom urls includes go here
@@ -14,7 +17,7 @@ urlpatterns += [
     # API base url
     path("api/v1/", include("config.api_router")),
     # DRF auth token
-    path("auth-token/", obtain_auth_token),
+    path("auth-token/", obtain_auth_token, name="auth-token"),
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
     path(
         "api/v1/docs/",
