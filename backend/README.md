@@ -1,52 +1,43 @@
-# dukka_assessment
+# Dukka Assessment Project Setup
 
-Behold My Awesome Project!
+## Table of Contents
 
-[![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter)](https://github.com/cookiecutter/cookiecutter-django/)
-[![Black code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+- [Dukka Assessment Project Setup](#dukka-assessment-project-setup)
+  - [Table of Contents](#table-of-contents)
+  - [Local Development](#local-development)
+    - [Run project locally with docker](#run-project-locally-with-docker)
 
-## Settings
+## Local Development
 
-Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings.html).
+1. Clone project repo
+2. Install docker and docker-compose
+3. Add docker to sudo group to use docker without sudo
+4. Install pre-commit in your global environment
 
-## Basic Commands
+        pip install pre-commit
 
-### Setting Up Your Users
+5. Install the git hook scripts
 
--   To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page. Go to your console to see a simulated email verification message. Copy the link into your browser. Now the user's email should be verified and ready to go.
+        cd <project_directory>
+        pre-commit install
 
--   To create a **superuser account**, use this command:
+### Run project locally with docker
 
-        $ python manage.py createsuperuser
+- Start the server
 
-For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
+        docker-compose -f local.yml up --build
 
-### Type checks
+- Run commands inside the container
 
-Running type checks with mypy:
+        docker-compose -f local.yml run --rm django <command>
+    EX:
 
-    $ mypy dukka_assessment
+        - docker-compose -f local.yml run --rm django python manage.py makemigrations # To create the migration files
+        - docker-compose -f local.yml run --rm django python manage.py migrate # To migrate the database
+        - docker-compose -f local.yml run --rm django python manage.py createsuperuser # To create super user
+        - docker-compose -f local.yml run --rm django pytest # For testing
 
-### Test coverage
+- Run tests
 
-To run the tests, check your test coverage, and generate an HTML coverage report:
-
-    $ coverage run -m pytest
-    $ coverage html
-    $ open htmlcov/index.html
-
-#### Running tests with pytest
-
-    $ pytest
-
-### Live reloading and Sass CSS compilation
-
-Moved to [Live reloading and SASS compilation](https://cookiecutter-django.readthedocs.io/en/latest/developing-locally.html#sass-compilation-live-reloading).
-
-## Deployment
-
-The following details how to deploy this application.
-
-### Docker
-
-See detailed [cookiecutter-django Docker documentation](http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html).
+        docker-compose -f local.yml run --rm django pytest
+        docker-compose -f local.yml run --rm django pytest dukka_assessment/users/tests/ # To run tests in this folder only
