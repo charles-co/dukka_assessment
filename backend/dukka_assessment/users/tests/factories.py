@@ -10,6 +10,8 @@ class UserFactory(DjangoModelFactory):
 
     email = Faker("email")
     name = Faker("name")
+    country = Faker("country")
+    sex = Faker("random_element", elements=("M", "F", "O"))
 
     @post_generation
     def password(self, create: bool, extracted: Sequence[Any], **kwargs):
@@ -25,7 +27,8 @@ class UserFactory(DjangoModelFactory):
                 lower_case=True,
             ).evaluate(None, None, extra={"locale": None})
         )
-        self.set_password(password)
+        if not isinstance(self, dict):
+            self.set_password(password)
 
     class Meta:
         model = get_user_model()
