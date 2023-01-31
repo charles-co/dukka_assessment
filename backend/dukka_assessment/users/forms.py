@@ -1,4 +1,3 @@
-from allauth.account.forms import SignupForm
 from django.contrib.auth import forms as admin_forms
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
@@ -21,13 +20,5 @@ class UserAdminCreationForm(admin_forms.UserCreationForm):
         model = User
 
         error_messages = {
-            "username": {"unique": _("This username has already been taken.")}
+            "email": {"unique": _("This email has already been taken.")}
         }
-
-
-class UserSignupForm(SignupForm):
-    """
-    Form that will be rendered on a user sign up section/screen.
-    Default fields will be added automatically.
-    Check UserSocialSignupForm for accounts created from social.
-    """

@@ -46,9 +46,9 @@ class User(AbstractUser):
     Other = "O"
 
     SEX_CHOICES = (
-        (Male, "Male")
-        (Female, "Female")
-        (Other, "Other")
+        (Male, "Male"),
+        (Female, "Female"),
+        (Other, "Other"),
     )
     """
     Default custom user model for dukka_assessment.
@@ -73,13 +73,5 @@ class User(AbstractUser):
 
     objects = UserManager()
 
-
-
-    def get_absolute_url(self):
-        """Get url for user's detail view.
-
-        Returns:
-            str: URL for user detail.
-
-        """
-        return reverse("users:detail", kwargs={"email": self.email})
+    def __str__(self):
+        return "%s - %s" % (self.email, self.name)

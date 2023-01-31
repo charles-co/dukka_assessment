@@ -7,8 +7,8 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["email", "name", "url"]
+        exclude = ["password", "is_superuser", "is_staff", "is_active", "groups", "user_permissions"]
 
         extra_kwargs = {
-            "url": {"view_name": "api:user-detail", "lookup_field": "email"}
+            "email": {"read_only": True}
         }

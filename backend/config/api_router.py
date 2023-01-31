@@ -1,15 +1,8 @@
-from django.conf import settings
-from rest_framework.routers import DefaultRouter, SimpleRouter
-
-from dukka_assessment.users.api.views import UserViewSet
-
-if settings.DEBUG:
-    router = DefaultRouter()
-else:
-    router = SimpleRouter()
-
-router.register("users", UserViewSet)
+from django.urls import path
+from dukka_assessment.users.api.views import user_endpoints
 
 
 app_name = "api"
-urlpatterns = router.urls
+urlpatterns = [
+    path("users/", user_endpoints, name="users"),
+]
