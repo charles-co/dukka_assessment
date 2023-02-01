@@ -12,6 +12,7 @@ class UserFactory(DjangoModelFactory):
     name = Faker("name")
     country = Faker("country")
     sex = Faker("random_element", elements=("M", "F", "O"))
+    phone_number = "+2348098488484"
 
     @post_generation
     def password(self, create: bool, extracted: Sequence[Any], **kwargs):

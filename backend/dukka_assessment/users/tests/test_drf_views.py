@@ -43,12 +43,18 @@ class TestUserViewSet:
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
     def test_create(self, client: APIClient):
-        response = client.post(
-            reverse("api:users"), factory.build(dict, FACTORY_CLASS=UserFactory)
-        )
-
+        obj = factory.build(dict, FACTORY_CLASS=UserFactory)
+        obj["password2"] = obj["password"] = "password"
+        response = client.post(reverse("api:users"), obj)
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data["email"] == User.objects.last().email
+
+    def test_create_with_wrong_password(self, client: APIClient):
+        obj = factory.build(dict, FACTORY_CLASS=UserFactory)
+        obj["password2"] = "test"
+        obj["password"] = "password"
+        response = client.post(reverse("api:users"), obj)
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
 
     def test_update(self, client: APIClient):
 

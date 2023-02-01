@@ -9,7 +9,7 @@ from rest_framework.schemas import coreapi as coreapi_schema
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 
-from .serializers import CustomAuthTokenSerializer, UserSerializer
+from .serializers import CustomAuthTokenSerializer, RegisterSerializer, UserSerializer
 
 User = get_user_model()
 
@@ -26,6 +26,26 @@ class UserViewSet(GenericViewSet):
 
     def get_object(self):
         return self.get_queryset().filter(is_active=True).first()
+
+    def get_serializer_class(self):
+        """
+        Return the class to use for the serializer.
+        Defaults to using `self.serializer_class`.
+
+        You may want to override this if you need to provide different
+        serializations depending on the incoming request.
+
+        (Eg. admins get full serialization, others get basic serialization)
+        """
+        assert self.serializer_class is not None, (
+            "'%s' should either include a `serializer_class` attribute, "
+            "or override the `get_serializer_class()` method." % self.__class__.__name__
+        )
+
+        if self.action == "create":
+            return RegisterSerializer
+
+        return self.serializer_class
 
     def get_permissions(self):
         """
@@ -55,6 +75,7 @@ class UserViewSet(GenericViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
+
         return Response(
             serializer.data,
             status=status.HTTP_201_CREATED,
