@@ -23,26 +23,6 @@
 
 ### Run project locally with docker
 
-- Ensure you have yarn installed if not use npm to install, to check run
-
-        yarn --version
-
-- To install yarn with npm run
-
-        npm install --global yarn
-
-- Goto */frontend* directory and run command
-
-        yarn
-
-        yarn relocate_main
-
-- Goto */frontend* directory and run command
-
-        yarn
-
-        yarn relocate_root
-
 
 - Start the server
 

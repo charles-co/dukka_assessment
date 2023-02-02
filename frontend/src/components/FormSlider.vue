@@ -199,7 +199,12 @@ export default {
 
                     if (key == "sex") {
                         let pattern = /man|woman/;
-                        this.transcript = pattern.exec(this.transcript)[0]
+                        this.transcript = pattern.exec(this.transcript)
+                        if (this.transcript.length == 0) {
+                            this.repeat(3)
+                        } else {
+                            this.transcript = this.transcript[0];
+                        }
                         this.value = "to continue with " + this.transcript + ", ";
                         if (this.transcript == "man") {
                             this.transcript = "M";
