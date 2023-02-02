@@ -29,6 +29,5 @@ const router = createRouter({
     history: createWebHashHistory("localhost:8000/"),
     routes,
 })
-console.log(router)
 
 export default router

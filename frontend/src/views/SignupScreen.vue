@@ -13,18 +13,19 @@ export default {
     },
     methods: {
         onFormSubmitted(event) {
-            axiosInstance.post('/api/v1/', {
-                "email": event.email,
-                "password": event.password,
-                "name": event.name,
-                "sex": event.sex,
-                "country": event.country,
-                "phone_number": event.phone_number,
+            axiosInstance.post('/api/v1/users/', {
+                "email": event.data.email,
+                "password": event.data.password,
+                "password2": event.data.password2,
+                "name": event.data.name,
+                "sex": event.data.sex,
+                "country": event.data.country,
+                "phone_number": event.data.phone_number,
             }).then(response => {
                 if (response.status === 201){
                     axiosInstance.post('/auth-token/', {
-                        email: event.email,
-                        password: event.password
+                        email: event.data.email,
+                        password: event.data.password
                     }).then(response => {
                         localStorage.setItem('token', response.data.token);
                         this.$store.commit('setUserLoginStatus', true);
@@ -36,8 +37,8 @@ export default {
                 else {
                     this.$router.push('/signup');
                 }
-            }).catch(error => {
-                console.log(error);
+            }).catch(() => {
+                this.$router.push('/signup');
             });
         }
     },

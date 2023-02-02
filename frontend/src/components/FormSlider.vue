@@ -1,3 +1,4 @@
+<!-- Form alternative to sign up or register a user with speech to text -->
 <template>
     <template v-if="type == 'login'">
         <div>
@@ -118,7 +119,6 @@ export default {
             this.msg = '';
             this.value = '';
             if (this.finished) {
-                console.log("emitting")
                 this.$emit('formSubmitted', { data: this.$data[this.type] })
                 annyang.abort()
             }
@@ -127,19 +127,21 @@ export default {
             setTimeout(() => {
                 this.step = step + 1;
                 this.acceptInput();
-            }, 500);
+            }, 250);
         },
         repeat(n = -1) {
+            // repeat current question, or a question n steps back
             let step = this.step;
             this.step = 0;
 
             setTimeout(() => {
                 this.step = n === -1 ? step : n;
                 this.acceptInput();
-            }, 500);
+            }, 250);
             this.$data[this.type][this.getkey()] = "";
         },
         prevStep(n = -1) {
+            // go back to previous question
             var step = this.step;
             this.step = 0;
             setTimeout(() => {
@@ -151,7 +153,7 @@ export default {
                     this.step = tmp < 1 ? 1 : tmp;
                 }
                 this.acceptInput()
-            }, 1000);
+            }, 500);
         },
         getkey() {
             let keys = Object.keys(this.$data[this.type]);
@@ -160,6 +162,8 @@ export default {
         },
         acceptInput() {
             annyang.abort();
+            // using webkitSpeechRecognition API to get voice input from the user
+
             const SpeechRecognition =
                 window.SpeechRecognition || window.webkitSpeechRecognition;
             this.recognition = new SpeechRecognition();
@@ -178,7 +182,6 @@ export default {
             this.recognition.start();
             this.recognition.onresult = event => {
                 this.transcript = event.results[0][0].transcript;
-                console.log("stopping")
                 this.recognition.stop();
                 annyang.start();
                 if (["next", "continue", "next step", "next question"].some(x => this.transcript.includes(x))) {
@@ -189,6 +192,7 @@ export default {
                 }
                 else {
                     if (key == "email") {
+                        // format email to corect format
                         this.transcript = this.transcript.replace(/^(.+) at (.+)$/i, "$1@$2").toLowerCase().replaceAll(" ", "");
                         this.value = "to continue with " + this.transcript + ", ";
                     }
@@ -229,12 +233,13 @@ export default {
                                 this.finished = true;
                             }
                         }
-                        this.finished = this.type == "login" ? true : false;
+                        if (this.type == "login") {
+                            this.finished = true;
+                        }
                     }
 
                     this.$data[this.type][key] = this.transcript;
                     this.showtranscript = true;
-                    console.log(this.$data[this.type]);
                     annyang.start();
                 }
             }
@@ -262,6 +267,8 @@ export default {
                 this.repeat();
             },
         }
+
+        // using annyang library to listen to voice commands and execute the corresponding functions
 
         annyang.addCommands(commands);
         annyang.start();

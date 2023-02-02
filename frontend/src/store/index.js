@@ -6,7 +6,6 @@ const store = createStore({
     },
     mutations: {
         setUserLoginStatus(state, isLoggedin) {
-            console.log("here in sstate")
             state.isLoggedin = isLoggedin
         }
     }

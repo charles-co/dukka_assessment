@@ -1,3 +1,8 @@
+<!-- This is the navbar component. It is used in the App.vue file.
+    It has a logo, a home button, a dashboard button, a login button, and a signup button.
+    The dashboard button and the logout button are only visible when the user is logged in.
+    The login and signup buttons are only visible when the user is not logged in.
+ -->
 <template>
     <div class="mb-1">
         <nav class="navbar navbar-expand-md navbar-light bg-light">
@@ -42,6 +47,7 @@
 </template>
 
 <script>
+
 export default {
     name: 'NavBar',
     props: {},
@@ -56,6 +62,11 @@ export default {
             this.$store.commit('setUserLoginStatus', false);
             this.$router.push('/login');
         },
+    },
+    created() {
+        if (localStorage.getItem('token')) {
+            this.$store.commit('setUserLoginStatus', true)
+        }
     }
 }
 </script>
